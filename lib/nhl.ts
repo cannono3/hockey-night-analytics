@@ -120,7 +120,7 @@ export interface Goalie {
 export async function getTeamSchedule(abbrev: string, season = "now") {
   const data = await get<{ games: ScheduleGame[] }>(
     `/club-schedule-season/${abbrev}/${season}`,
-    300 // 5 min cache — schedule doesn't change often
+    86400 // 24hr cache — full season schedule barely changes
   );
   return data.games.filter((g) => g.gameType === 2); // regular season only
 }
@@ -132,6 +132,7 @@ export interface ScheduleGame {
   gameType: number;
   awayTeam: GameTeam;
   homeTeam: GameTeam;
+  periodDescriptor?: { periodType: string }; // "REG" | "OT" | "SO"
 }
 
 export interface GameTeam {

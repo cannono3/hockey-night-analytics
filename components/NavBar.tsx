@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, Users, Trophy } from "lucide-react";
+import { BarChart3, Bot, Users, Trophy, TrendingUp, Globe } from "lucide-react";
 
 const LINKS = [
   { href: "/", label: "Dashboard", icon: BarChart3 },
+  { href: "/betting", label: "Betting", icon: TrendingUp },
+  { href: "/league", label: "League", icon: Globe },
   { href: "/teams", label: "Teams", icon: Users },
   { href: "/awards", label: "Awards", icon: Trophy },
   { href: "/analyst", label: "AI Analyst", icon: Bot },

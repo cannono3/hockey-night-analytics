@@ -13,11 +13,11 @@ export default async function TeamPage({ params }: Props) {
   const { abbrev } = await params;
   const upper = abbrev.toUpperCase();
 
-  const [stats, schedule, standings] = await Promise.all([
+  const [stats, standings] = await Promise.all([
     getTeamStats(upper),
-    getTeamSchedule(upper),
     getStandings(),
   ]);
+  const schedule = await getTeamSchedule(upper).catch(() => []);
 
   const teamStanding = standings.find((t) => t.teamAbbrev.default === upper);
   const skaters = stats.skaters.sort((a, b) => b.points - a.points);
@@ -34,12 +34,15 @@ export default async function TeamPage({ params }: Props) {
     const oppScore = isHome ? (g.awayTeam.score ?? 0) : (g.homeTeam.score ?? 0);
     const opponent = isHome ? g.awayTeam.abbrev : g.homeTeam.abbrev;
     const win = teamScore > oppScore;
+    const periodType = g.periodDescriptor?.periodType ?? "REG";
+    // OT/SO loss = 1 point, reg loss = 0, win = 2
+    const result: "W" | "L" | "OTL" = win ? "W" : (periodType === "OT" || periodType === "SO") ? "OTL" : "L";
     return {
       date: g.gameDate.slice(5),
       gf: teamScore,
       ga: oppScore,
       opponent,
-      result: (win ? "W" : "L") as "W" | "L",
+      result,
     };
   });
 

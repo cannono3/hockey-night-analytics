@@ -162,12 +162,19 @@ export default async function AwardsPage() {
     .sort((a, b) => b.score - a.score)
     .slice(0, 5);
 
+  // Normalize each award's scores so they sum to 100%
+  function normalize(candidates: AwardCandidate[]): AwardCandidate[] {
+    const total = candidates.reduce((s, c) => s + c.score, 0);
+    if (total === 0) return candidates;
+    return candidates.map((c) => ({ ...c, score: Math.round((c.score / total) * 100) }));
+  }
+
   const awards: Award[] = [
-    { name: "Hart Trophy", description: "Most valuable player to his team", candidates: hartCandidates },
-    { name: "Art Ross Trophy", description: "Regular season scoring champion", candidates: artRossCandidates },
-    { name: "Rocket Richard Trophy", description: "Regular season goals leader", candidates: richardCandidates },
-    { name: "Norris Trophy", description: "Best defenseman", candidates: norrisCandidates },
-    { name: "Lady Byng Trophy", description: "Sportsmanship + high skill", candidates: ladyByngCandidates },
+    { name: "Hart Trophy", description: "Most valuable player to his team", candidates: normalize(hartCandidates) },
+    { name: "Art Ross Trophy", description: "Regular season scoring champion", candidates: normalize(artRossCandidates) },
+    { name: "Rocket Richard Trophy", description: "Regular season goals leader", candidates: normalize(richardCandidates) },
+    { name: "Norris Trophy", description: "Best defenseman", candidates: normalize(norrisCandidates) },
+    { name: "Lady Byng Trophy", description: "Sportsmanship + high skill", candidates: normalize(ladyByngCandidates) },
   ];
 
   return (

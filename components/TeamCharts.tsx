@@ -10,7 +10,7 @@ interface GameResult {
   gf: number;
   ga: number;
   opponent: string;
-  result: "W" | "L";
+  result: "W" | "L" | "OTL";
 }
 
 interface Props {
@@ -29,7 +29,7 @@ export default function TeamCharts({ gameResults }: Props) {
   // Running point total
   let pts = 0;
   const pointTrend = gameResults.map((g) => {
-    pts += g.result === "W" ? 2 : 0;
+    pts += g.result === "W" ? 2 : g.result === "OTL" ? 1 : 0;
     return { date: g.date, points: pts, result: g.result };
   });
 
@@ -78,7 +78,7 @@ export default function TeamCharts({ gameResults }: Props) {
                     cx={cx}
                     cy={cy}
                     r={3}
-                    fill={payload.result === "W" ? "#22c55e" : "#ef4444"}
+                    fill={payload.result === "W" ? "#22c55e" : payload.result === "OTL" ? "#f5c842" : "#ef4444"}
                     stroke="none"
                   />
                 );
